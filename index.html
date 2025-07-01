@@ -221,6 +221,61 @@
         .card-body a:hover {
             text-decoration: none;
         }
+        
+        /* =================================
+           7. RESPONSIVE DESIGN (MOBILE)
+           ================================= */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .main-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .nav-links {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links a {
+                margin-left: 0;
+            }
+
+            .hero h1 {
+                font-size: clamp(3.5rem, 20vw, 7rem); /* Sedikit lebih kecil di mobile */
+            }
+            
+            .marquee-content {
+                font-size: 1.5rem; /* Ukuran font lebih kecil */
+                animation-duration: 18s; /* Animasi sedikit lebih cepat */
+            }
+            
+            .projects-section {
+                grid-template-columns: 1fr; /* Satu kolom di mobile */
+                gap: 40px; /* Jarak lebih besar antar kartu proyek */
+            }
+
+            .interactive-section {
+                height: auto; /* Tinggi otomatis agar konten muat */
+                min-height: 350px;
+                padding-bottom: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .draggable-card {
+                position: relative; /* Menjadi bagian dari alur dokumen */
+                width: 100%; /* Lebar penuh */
+                left: 0;
+                top: 0;
+            }
+        }
 
     </style>
 </head>
@@ -300,15 +355,16 @@
         let offsetX, offsetY;
 
         const startDrag = (e) => {
+            // Hanya aktifkan drag di layar non-mobile
+            if (window.innerWidth <= 768) return;
+            
             isDragging = true;
             draggableCard.classList.add('dragging');
             
-            // Menghitung offset dari posisi mouse ke pojok kiri atas elemen
             const event = e.type === 'mousedown' ? e : e.touches[0];
             offsetX = event.clientX - draggableCard.offsetLeft;
             offsetY = event.clientY - draggableCard.offsetTop;
 
-            // Menambahkan event listener ke window untuk pergerakan mulus
             window.addEventListener('mousemove', onDrag);
             window.addEventListener('touchmove', onDrag);
             window.addEventListener('mouseup', stopDrag);
@@ -317,14 +373,12 @@
 
         const onDrag = (e) => {
             if (!isDragging) return;
-            // Mencegah aksi default browser (seperti seleksi teks)
             e.preventDefault();
             
             const event = e.type === 'mousemove' ? e : e.touches[0];
             let newX = event.clientX - offsetX;
             let newY = event.clientY - offsetY;
             
-            // Batasi pergerakan di dalam container-nya
             const container = draggableCard.parentElement;
             const containerRect = container.getBoundingClientRect();
             const cardRect = draggableCard.getBoundingClientRect();
@@ -340,7 +394,6 @@
             isDragging = false;
             draggableCard.classList.remove('dragging');
             
-            // Menghapus event listener dari window
             window.removeEventListener('mousemove', onDrag);
             window.removeEventListener('touchmove', onDrag);
             window.removeEventListener('mouseup', stopDrag);
